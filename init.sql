@@ -30,15 +30,15 @@ CREATE INDEX IF NOT EXISTS idx_tasks_due_date ON tasks(due_date);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
 -- Seed data: Demo user
--- Email: demo@example.com
--- Password: Demo@123
+-- Email: demo@taskmanagement.local
+-- Password: Demo@12345
 -- BCrypt hash with work factor 11
 INSERT INTO users (id, name, email, password_hash, password_salt, created_at)
 VALUES (
     '00000000-0000-0000-0000-000000000001',
     'Demo User',
-    'demo@example.com',
-    '$2a$11$qp.4RQGXNzNNWCwCHKj5SeLp9JaVMlS1VrJNzQUzLXk6LN/rVWZnK',
+    'demo@taskmanagement.local',
+    '$2a$11$gy01zuRVPiQrqN5/IM9Lp.9BmJ2cur2dn1Z/Fwkt6N1d2ePHtbcBG',
     '',
     NOW()
 ) ON CONFLICT (email) DO NOTHING;

@@ -33,7 +33,7 @@ public class TasksControllerTests : IClassFixture<ApiWebApplicationFactory>
 
         // Login as the seeded demo user to obtain a valid token
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login",
-            new LoginRequest("demo@example.com", "Demo@123"));
+            new LoginRequest("demo@taskmanagement.local", "Demo@12345"));
         loginResponse.EnsureSuccessStatusCode();
 
         var auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
@@ -62,7 +62,7 @@ public class TasksControllerTests : IClassFixture<ApiWebApplicationFactory>
 
         // Login as demo user (user A) and create a task
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login",
-            new LoginRequest("demo@example.com", "Demo@123"));
+            new LoginRequest("demo@taskmanagement.local", "Demo@12345"));
         var authA = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
         Assert.NotNull(authA);
 

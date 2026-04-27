@@ -48,10 +48,10 @@ public class UserRepositoryTests : IDisposable
     [Fact]
     public async System.Threading.Tasks.Task FindByEmailAsync_ExistingUser_ReturnsUser()
     {
-        var result = await _repository.FindByEmailAsync("demo@example.com");
+        var result = await _repository.FindByEmailAsync("demo@taskmanagement.local");
 
         Assert.NotNull(result);
-        Assert.Equal("demo@example.com", result.Email);
+        Assert.Equal("demo@taskmanagement.local", result.Email);
         Assert.Equal("Demo User", result.Name);
     }
 
@@ -72,7 +72,7 @@ public class UserRepositoryTests : IDisposable
 
         Assert.NotNull(result);
         Assert.Equal(demoUserId, result.Id);
-        Assert.Equal("demo@example.com", result.Email);
+        Assert.Equal("demo@taskmanagement.local", result.Email);
     }
 
     public void Dispose()

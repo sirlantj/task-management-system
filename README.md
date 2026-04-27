@@ -194,8 +194,8 @@ dotnet test
 ## Demo Credentials
 
 ```
-Email:    demo@example.com
-Password: Demo@123
+Email:    demo@taskmanagement.local
+Password: Demo@12345
 ```
 
 ---
