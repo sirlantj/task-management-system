@@ -18,6 +18,17 @@ public class TaskItemStatusTransitionTests
     }
 
     [Theory]
+    [InlineData(TaskStatus.Pending)]
+    [InlineData(TaskStatus.InProgress)]
+    [InlineData(TaskStatus.Done)]
+    public void TransitionStatus_SameStatus_IsIdempotent(TaskStatus status)
+    {
+        var task = BuildTask(status: status);
+        task.TransitionStatus(status);
+        Assert.Equal(status, task.Status);
+    }
+
+    [Theory]
     [InlineData(TaskStatus.Done, TaskStatus.Pending)]
     [InlineData(TaskStatus.Done, TaskStatus.InProgress)]
     [InlineData(TaskStatus.InProgress, TaskStatus.Pending)]

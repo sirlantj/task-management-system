@@ -109,7 +109,7 @@ public class TaskItem
     }
 
     private static bool IsValidTransition(TaskStatus from, TaskStatus to) =>
-        (from, to) switch
+        from == to || (from, to) switch
         {
             (TaskStatus.Pending, TaskStatus.InProgress) => true,
             (TaskStatus.Pending, TaskStatus.Done) => true,
