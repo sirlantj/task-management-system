@@ -15,6 +15,6 @@ public class GetTasksUseCase
     public async Task<IEnumerable<TaskResponse>> ExecuteAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var tasks = await _taskRepository.GetAllByUserIdAsync(userId, cancellationToken);
-        return tasks.Select(CreateTaskUseCase.MapToResponse);
+        return tasks.Select(TaskMapper.ToResponse);
     }
 }

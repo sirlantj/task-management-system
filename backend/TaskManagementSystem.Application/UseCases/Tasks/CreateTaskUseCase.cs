@@ -26,10 +26,6 @@ public class CreateTaskUseCase
             null);
 
         await _taskRepository.CreateAsync(task, cancellationToken);
-        return MapToResponse(task);
+        return TaskMapper.ToResponse(task);
     }
-
-    internal static TaskResponse MapToResponse(TaskItem task) =>
-        new(task.Id, task.Title, task.Description, task.Status.ToString(),
-            task.DueDate, task.UserId, task.CreatedAt, task.UpdatedAt);
 }

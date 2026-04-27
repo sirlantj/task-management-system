@@ -1,6 +1,7 @@
 using TaskManagementSystem.Application.DTOs;
 using TaskManagementSystem.Application.Exceptions;
 using TaskManagementSystem.Application.Interfaces;
+using TaskManagementSystem.Domain.Exceptions;
 
 namespace TaskManagementSystem.Application.UseCases.Tasks;
 
@@ -27,12 +28,12 @@ public class UpdateTaskUseCase
         if (request.Status is not null)
         {
             if (!Enum.TryParse<TaskStatus>(request.Status, ignoreCase: true, out var newStatus))
-                throw new ArgumentException($"'{request.Status}' is not a valid task status.");
+                throw new DomainException($"'{request.Status}' is not a valid task status.");
 
             task.TransitionStatus(newStatus);
         }
 
         await _taskRepository.UpdateAsync(task, cancellationToken);
-        return CreateTaskUseCase.MapToResponse(task);
+        return TaskMapper.ToResponse(task);
     }
 }

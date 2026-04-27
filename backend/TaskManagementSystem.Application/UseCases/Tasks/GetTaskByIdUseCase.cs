@@ -20,6 +20,6 @@ public class GetTaskByIdUseCase
         if (task is null)
             throw new NotFoundException($"Task '{taskId}' not found.");
 
-        return CreateTaskUseCase.MapToResponse(task);
+        return TaskMapper.ToResponse(task);
     }
 }
