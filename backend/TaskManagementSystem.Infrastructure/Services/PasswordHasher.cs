@@ -4,14 +4,9 @@ namespace TaskManagementSystem.Infrastructure.Services;
 
 public class PasswordHasher : IPasswordHasher
 {
-    public (string Hash, string Salt) HashPassword(string password)
-    {
-        var hash = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 11);
-        return (hash, string.Empty);
-    }
+    public string HashPassword(string password) =>
+        BCrypt.Net.BCrypt.HashPassword(password, workFactor: 11);
 
-    public bool VerifyPassword(string password, string hash, string salt)
-    {
-        return BCrypt.Net.BCrypt.Verify(password, hash);
-    }
+    public bool VerifyPassword(string password, string hash) =>
+        BCrypt.Net.BCrypt.Verify(password, hash);
 }

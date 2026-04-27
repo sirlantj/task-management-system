@@ -2,6 +2,6 @@ namespace TaskManagementSystem.Application.Interfaces;
 
 public interface IPasswordHasher
 {
-    (string Hash, string Salt) HashPassword(string password);
-    bool VerifyPassword(string password, string hash, string salt);
+    string HashPassword(string password);
+    bool VerifyPassword(string password, string hash);
 }

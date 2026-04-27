@@ -27,8 +27,8 @@ public class RegisterUserUseCase
         if (existing is not null)
             throw new ConflictException($"Email '{request.Email}' is already registered.");
 
-        var (hash, salt) = _passwordHasher.HashPassword(request.Password);
-        var user = new User(Guid.NewGuid(), request.Name, request.Email, hash, salt, DateTime.UtcNow);
+        var hash = _passwordHasher.HashPassword(request.Password);
+        var user = new User(Guid.NewGuid(), request.Name, request.Email, hash, string.Empty, DateTime.UtcNow);
 
         await _userRepository.CreateAsync(user, cancellationToken);
 

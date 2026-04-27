@@ -31,7 +31,7 @@ public class RegisterUserUseCaseTests
     public async System.Threading.Tasks.Task ExecuteAsync_NewEmail_CreatesUserAndReturnsToken()
     {
         _userRepo.Setup(r => r.FindByEmailAsync("bob@example.com", default)).ReturnsAsync((User?)null);
-        _hasher.Setup(h => h.HashPassword("password")).Returns(("hash", "salt"));
+        _hasher.Setup(h => h.HashPassword("password")).Returns("hash");
         _tokenService.Setup(t => t.GenerateToken(It.IsAny<User>())).Returns("jwt-token");
 
         var request = new RegisterUserRequest("Bob", "bob@example.com", "password");

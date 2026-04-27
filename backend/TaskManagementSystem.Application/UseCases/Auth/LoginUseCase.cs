@@ -24,7 +24,7 @@ public class LoginUseCase
     {
         var user = await _userRepository.FindByEmailAsync(request.Email, cancellationToken);
 
-        if (user is null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt))
+        if (user is null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
             throw new UnauthorizedException("Invalid email or password.");
 
         var token = _tokenService.GenerateToken(user);

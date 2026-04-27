@@ -31,7 +31,7 @@ public class LoginUseCaseTests
     {
         var user = new User(Guid.NewGuid(), "Alice", "alice@example.com", "hash", "salt", DateTime.UtcNow);
         _userRepo.Setup(r => r.FindByEmailAsync("alice@example.com", default)).ReturnsAsync(user);
-        _hasher.Setup(h => h.VerifyPassword("wrong", "hash", "salt")).Returns(false);
+        _hasher.Setup(h => h.VerifyPassword("wrong", "hash")).Returns(false);
 
         var request = new LoginRequest("alice@example.com", "wrong");
 
@@ -43,7 +43,7 @@ public class LoginUseCaseTests
     {
         var user = new User(Guid.NewGuid(), "Alice", "alice@example.com", "hash", "salt", DateTime.UtcNow);
         _userRepo.Setup(r => r.FindByEmailAsync("alice@example.com", default)).ReturnsAsync(user);
-        _hasher.Setup(h => h.VerifyPassword("correct", "hash", "salt")).Returns(true);
+        _hasher.Setup(h => h.VerifyPassword("correct", "hash")).Returns(true);
         _tokenService.Setup(t => t.GenerateToken(user)).Returns("jwt-token");
 
         var result = await CreateUseCase().ExecuteAsync(new LoginRequest("alice@example.com", "correct"));
