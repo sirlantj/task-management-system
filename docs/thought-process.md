@@ -19,7 +19,7 @@ The Use Case pattern was chosen over generic service classes (e.g., `TaskService
 
 - **Ownership** is enforced in the Application layer by always passing the authenticated user ID to use cases and from there into repository queries. Repositories never decide ownership — they receive a `userId` filter.
 - **404 over 403** for cross-user task access: returning 404 avoids leaking the existence of resources owned by other users (security by obscurity for resource enumeration).
-- **PBKDF2 (Rfc2898DeriveBytes)** for password hashing: built into .NET, no third-party dependency, adequate for the exercise scope.
+- **BCrypt (BCrypt.Net-Next, work factor 11)** for password hashing: adaptive cost factor, widely used, no separate salt storage needed since BCrypt embeds the salt in the hash output. The `password_salt` column in the schema is always stored as an empty string as a result — the column exists per the spec but is not functionally used.
 - **Done is terminal**: once a task reaches Done, no further status changes are allowed and deletion is rejected at the domain level.
 
 ## Frontend Decisions

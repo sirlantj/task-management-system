@@ -22,8 +22,11 @@ The AI generated the initial folder structure, project references, NuGet package
 
 - Ensured repository queries used parameterized `NpgsqlCommand` parameters, not string interpolation.
 - Verified that `DbConnectionFactory` opens and disposes connections per operation (no long-lived connections).
-- Confirmed JWT claims extraction in controllers was consistent with token generation in infrastructure.
+- Confirmed JWT claims extraction in controllers was consistent with token generation in infrastructure (`MapInboundClaims = false` required to prevent claim name remapping).
 - Adjusted error response shapes to match the documented `{ "error": "...", "details": "..." }` format.
+- Fixed a TypeScript strict-mode incompatibility: `erasableSyntaxOnly: true` does not allow constructor parameter properties. `ApiError.status` was moved to an explicit class field declaration.
+- Fixed a status transition bug introduced during integration review: `EditTaskPage` always sent the current `status` in the PUT payload, which caused a `Done → Done` transition error. Fixed to only send `status` when it differs from the current task status.
+- Corrected documentation that incorrectly referenced PBKDF2 as the password hashing algorithm. The implementation uses BCrypt (BCrypt.Net-Next, work factor 11), which embeds the salt in the hash output. The `password_salt` column is stored as an empty string as a result.
 
 ## How Edge Cases Were Handled
 
@@ -39,10 +42,11 @@ The AI generated the initial folder structure, project references, NuGet package
 
 ## Security Concerns Checked
 
-- SQL injection: all queries use parameterized commands only.
-- JWT secret is read from environment variables, never hardcoded.
+- SQL injection: all queries use parameterized `NpgsqlCommand` parameters — no string interpolation.
+- JWT secret is read from configuration/environment variables, never hardcoded in source.
 - localStorage JWT trade-off is documented with a recommendation for httpOnly cookies in production.
-- Password hashing uses PBKDF2 (Rfc2898DeriveBytes) with a per-user random salt.
+- Password hashing uses BCrypt (work factor 11). The hash includes the salt — no plain-text password is ever stored.
+- All task endpoints confirmed to scope queries by authenticated user ID — no cross-user data leakage possible at the repository layer.
 
 ## Why EF, Dapper, and MediatR Were Avoided
 
