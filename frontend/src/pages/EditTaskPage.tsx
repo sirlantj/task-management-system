@@ -34,7 +34,7 @@ export default function EditTaskPage() {
         title,
         description: description.trim() || null,
         dueDate: dueDate ? `${dueDate}T00:00:00.000Z` : null,
-        status,
+        status: status !== task.status ? status : undefined,
       });
       navigate('/tasks');
     } catch (err) {
