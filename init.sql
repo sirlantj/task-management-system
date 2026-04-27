@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(500) NOT NULL,
     password_salt VARCHAR(500) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Tasks table
@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS tasks (
     title VARCHAR(500) NOT NULL,
     description TEXT,
     status VARCHAR(50) NOT NULL CHECK (status IN ('Pending', 'InProgress', 'Done')),
-    due_date TIMESTAMP,
+    due_date TIMESTAMPTZ,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ,
     CONSTRAINT check_title_not_empty CHECK (LENGTH(TRIM(title)) > 0)
 );
 
