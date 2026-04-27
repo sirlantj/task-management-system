@@ -233,7 +233,7 @@ Each operation (CreateTask, DeleteTask, Login, ...) is its own class with a sing
 All database access uses parameterized `NpgsqlCommand` queries written explicitly. No query builder, no mapper, no ORM abstraction. Row mapping is manual and visible. This makes SQL injection impossible (no string interpolation) and every query intentional.
 
 **BCrypt for password hashing**
-BCrypt (work factor 11) was used via BCrypt.Net-Next. BCrypt embeds the salt in the hash output, so the `password_salt` column in the schema is always stored as an empty string. The column exists to match the interface contract in the spec; it is not functionally used.
+BCrypt stores the salt as part of the hash string itself. The password_salt column is retained because the schema explicitly includes it, but for BCrypt-based hashes the separate salt value is not required.
 
 **JWT authentication**
 Tokens are signed with HMAC-SHA256. `MapInboundClaims = false` prevents ASP.NET Core from remapping the `sub` claim, ensuring the user ID is read consistently in controllers using `JwtRegisteredClaimNames.Sub`. `ClockSkew = TimeSpan.Zero` enforces strict token expiry.
@@ -260,7 +260,7 @@ The Vite dev server proxies all `/api/*` requests to `http://localhost:5030`. Th
 - **No rate limiting.** Login and registration endpoints are not rate-limited.
 - **No observability.** No structured logging, distributed tracing, or metrics beyond the default ASP.NET Core request logging.
 - **Repository integration tests require a live database.** There is no test database abstraction or container-per-test setup (e.g., Testcontainers). The tests use a hardcoded connection string pointing to the Docker Compose instance.
-- **API integration tests require the seeded demo user.** The two integration-tagged controller tests authenticate as `demo@example.com` and depend on the seed data from `init.sql`.
+- **API integration tests require the seeded demo user.** The two integration-tagged controller tests authenticate as `demo@taskmanagement.local` and depend on the seed data from `init.sql`.
 - **`password_salt` column is always empty.** BCrypt embeds the salt in the hash. The column exists in the schema per the spec but holds no data in practice.
 
 ---
