@@ -134,3 +134,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Required so WebApplicationFactory<Program> can access this type from the test assembly.
+public partial class Program { }
