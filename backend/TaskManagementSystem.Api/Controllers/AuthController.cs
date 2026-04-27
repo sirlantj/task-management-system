@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.Application.DTOs;
-using TaskManagementSystem.Application.Interfaces;
 using TaskManagementSystem.Application.UseCases.Auth;
 
 namespace TaskManagementSystem.Api.Controllers;
@@ -13,16 +12,16 @@ public class AuthController : ControllerBase
 {
     private readonly RegisterUserUseCase _registerUserUseCase;
     private readonly LoginUseCase _loginUseCase;
-    private readonly IUserRepository _userRepository;
+    private readonly GetCurrentUserUseCase _getCurrentUserUseCase;
 
     public AuthController(
         RegisterUserUseCase registerUserUseCase,
         LoginUseCase loginUseCase,
-        IUserRepository userRepository)
+        GetCurrentUserUseCase getCurrentUserUseCase)
     {
         _registerUserUseCase = registerUserUseCase;
         _loginUseCase = loginUseCase;
-        _userRepository = userRepository;
+        _getCurrentUserUseCase = getCurrentUserUseCase;
     }
 
     [HttpPost("register")]
@@ -50,11 +49,7 @@ public class AuthController : ControllerBase
         if (!Guid.TryParse(userIdString, out var userId))
             return Unauthorized();
 
-        var user = await _userRepository.FindByIdAsync(userId, cancellationToken);
-
-        if (user is null)
-            return NotFound();
-
-        return Ok(new { user.Id, user.Name, user.Email });
+        var result = await _getCurrentUserUseCase.ExecuteAsync(userId, cancellationToken);
+        return Ok(result);
     }
 }

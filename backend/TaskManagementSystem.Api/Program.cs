@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TaskManagementSystem.Api.Middleware;
@@ -26,6 +27,7 @@ builder.Services.AddScoped<ITokenService, JwtTokenService>();
 // --- Use Cases ---
 builder.Services.AddScoped<RegisterUserUseCase>();
 builder.Services.AddScoped<LoginUseCase>();
+builder.Services.AddScoped<GetCurrentUserUseCase>();
 builder.Services.AddScoped<CreateTaskUseCase>();
 builder.Services.AddScoped<GetTasksUseCase>();
 builder.Services.AddScoped<GetTaskByIdUseCase>();
@@ -33,24 +35,26 @@ builder.Services.AddScoped<UpdateTaskUseCase>();
 builder.Services.AddScoped<DeleteTaskUseCase>();
 
 // --- JWT Authentication ---
-var jwtSection = builder.Configuration.GetSection("Jwt");
-var jwtSettings = jwtSection.Get<JwtSettings>()
-    ?? throw new InvalidOperationException("JWT configuration section is missing.");
-
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    .AddJwtBearer();
+
+// Configure JWT bearer via IOptions so test overrides are picked up after Build().
+builder.Services
+    .AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+    .Configure<IOptions<JwtSettings>>((bearerOptions, jwtSettings) =>
     {
-        options.MapInboundClaims = false;
-        options.TokenValidationParameters = new TokenValidationParameters
+        var s = jwtSettings.Value;
+        bearerOptions.MapInboundClaims = false;
+        bearerOptions.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+            ValidIssuer = s.Issuer,
+            ValidAudience = s.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(s.Secret)),
             ClockSkew = TimeSpan.Zero
         };
     });
@@ -127,7 +131,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
