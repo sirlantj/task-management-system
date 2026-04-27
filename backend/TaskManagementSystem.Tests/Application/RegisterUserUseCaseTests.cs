@@ -16,6 +16,20 @@ public class RegisterUserUseCaseTests
     private RegisterUserUseCase CreateUseCase() =>
         new(_userRepo.Object, _hasher.Object, _tokenService.Object);
 
+    [Theory]
+    [InlineData("", "email@example.com", "password123", "Name is required")]
+    [InlineData("  ", "email@example.com", "password123", "Name is required")]
+    [InlineData("Alice", "", "password123", "valid email")]
+    [InlineData("Alice", "not-an-email", "password123", "valid email")]
+    [InlineData("Alice", "email@example.com", "short", "8 characters")]
+    public async System.Threading.Tasks.Task ExecuteAsync_InvalidInput_ThrowsValidationException(
+        string name, string email, string password, string expectedFragment)
+    {
+        var request = new RegisterUserRequest(name, email, password);
+        var ex = await Assert.ThrowsAsync<ValidationException>(() => CreateUseCase().ExecuteAsync(request));
+        Assert.Contains(expectedFragment, ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async System.Threading.Tasks.Task ExecuteAsync_DuplicateEmail_ThrowsConflictException()
     {
@@ -31,10 +45,10 @@ public class RegisterUserUseCaseTests
     public async System.Threading.Tasks.Task ExecuteAsync_NewEmail_CreatesUserAndReturnsToken()
     {
         _userRepo.Setup(r => r.FindByEmailAsync("bob@example.com", default)).ReturnsAsync((User?)null);
-        _hasher.Setup(h => h.HashPassword("password")).Returns("hash");
+        _hasher.Setup(h => h.HashPassword("password1")).Returns("hash");
         _tokenService.Setup(t => t.GenerateToken(It.IsAny<User>())).Returns("jwt-token");
 
-        var request = new RegisterUserRequest("Bob", "bob@example.com", "password");
+        var request = new RegisterUserRequest("Bob", "bob@example.com", "password1");
         var result = await CreateUseCase().ExecuteAsync(request);
 
         Assert.Equal("jwt-token", result.Token);
