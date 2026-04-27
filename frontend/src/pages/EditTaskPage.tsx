@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { tasksApi, ApiError } from '../api/client';
+import { tasksApi } from '../api/client';
+import { getErrorMessage } from '../utils/errors';
 import type { Task } from '../types/task';
 import { Layout } from '../components/Layout';
 import { TaskForm, type TaskFormValues } from '../components/TaskForm';
@@ -19,14 +20,12 @@ export default function EditTaskPage() {
     tasksApi
       .getById(id)
       .then(setTask)
-      .catch(err =>
-        setError(err instanceof ApiError ? err.message : 'Task not found.')
-      )
+      .catch(err => setError(getErrorMessage(err, 'Task not found.')))
       .finally(() => setIsFetching(false));
   }, [id]);
 
   const handleSubmit = async ({ title, description, dueDate, status }: TaskFormValues) => {
-    if (!id) return;
+    if (!id || !task) return;
     setError('');
     setIsLoading(true);
     try {
@@ -38,7 +37,7 @@ export default function EditTaskPage() {
       });
       navigate('/tasks');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to update task.');
+      setError(getErrorMessage(err, 'Failed to update task.'));
     } finally {
       setIsLoading(false);
     }

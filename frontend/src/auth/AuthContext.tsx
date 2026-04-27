@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { authApi, type AuthResponse } from '../api/client';
+import { authApi, TOKEN_KEY, type AuthResponse } from '../api/client';
 
 interface AuthUser {
   userId: string;
@@ -17,8 +17,6 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-const TOKEN_KEY = 'auth_token';
 
 function userFromResponse(res: AuthResponse, token: string): AuthUser {
   return { userId: res.userId, name: res.name, email: res.email, token };

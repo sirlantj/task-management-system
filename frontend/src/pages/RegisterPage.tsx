@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { ApiError } from '../api/client';
+import { inputClass } from '../styles';
+import { getErrorMessage } from '../utils/errors';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -21,15 +22,11 @@ export default function RegisterPage() {
       await register(name, email, password);
       navigate('/tasks');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Registration failed. Please try again.');
+      setError(getErrorMessage(err, 'Registration failed. Please try again.'));
     } finally {
       setIsLoading(false);
     }
   };
-
-  const inputClass =
-    'mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm ' +
-    'focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500';
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">

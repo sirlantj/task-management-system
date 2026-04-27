@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import type { TaskStatus } from '../types/task';
+import { STATUS_LABELS, type TaskStatus } from '../types/task';
+import { inputClass } from '../styles';
 
 export interface TaskFormValues {
   title: string;
@@ -23,12 +24,6 @@ const VALID_NEXT_STATUSES: Record<TaskStatus, TaskStatus[]> = {
   Pending: ['Pending', 'InProgress', 'Done'],
   InProgress: ['InProgress', 'Done'],
   Done: ['Done'],
-};
-
-const STATUS_LABELS: Record<TaskStatus, string> = {
-  Pending: 'Pending',
-  InProgress: 'In Progress',
-  Done: 'Done',
 };
 
 function isoToDateInput(iso: string | null | undefined): string {
@@ -63,10 +58,6 @@ export function TaskForm({
     setTitleError('');
     onSubmit({ title: title.trim(), description, dueDate, status });
   };
-
-  const inputClass =
-    'mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm ' +
-    'focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500';
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">

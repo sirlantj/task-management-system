@@ -1,5 +1,11 @@
 export type TaskStatus = 'Pending' | 'InProgress' | 'Done';
 
+export const STATUS_LABELS: Record<TaskStatus, string> = {
+  Pending: 'Pending',
+  InProgress: 'In Progress',
+  Done: 'Done',
+};
+
 export interface Task {
   id: string;
   title: string;

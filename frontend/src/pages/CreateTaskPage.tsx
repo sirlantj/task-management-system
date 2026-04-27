@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { tasksApi, ApiError } from '../api/client';
+import { tasksApi } from '../api/client';
+import { getErrorMessage } from '../utils/errors';
 import { Layout } from '../components/Layout';
 import { TaskForm, type TaskFormValues } from '../components/TaskForm';
 
@@ -21,7 +22,7 @@ export default function CreateTaskPage() {
       });
       navigate('/tasks');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to create task.');
+      setError(getErrorMessage(err, 'Failed to create task.'));
     } finally {
       setIsLoading(false);
     }

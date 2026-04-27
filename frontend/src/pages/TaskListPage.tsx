@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { tasksApi, ApiError } from '../api/client';
+import { tasksApi } from '../api/client';
+import { getErrorMessage } from '../utils/errors';
 import type { Task } from '../types/task';
 import { Layout } from '../components/Layout';
 import { TaskCard } from '../components/TaskCard';
@@ -17,7 +18,7 @@ export default function TaskListPage() {
       .getAll()
       .then(setTasks)
       .catch(err =>
-        setError(err instanceof ApiError ? err.message : 'Failed to load tasks.')
+        setError(getErrorMessage(err, 'Failed to load tasks.'))
       )
       .finally(() => setIsLoading(false));
   }, []);
@@ -28,7 +29,7 @@ export default function TaskListPage() {
       await tasksApi.delete(id);
       setTasks(prev => prev.filter(t => t.id !== id));
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to delete task.');
+      setError(getErrorMessage(err, 'Failed to delete task.'));
     }
   };
 

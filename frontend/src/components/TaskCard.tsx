@@ -1,4 +1,4 @@
-import type { Task } from '../types/task';
+import { STATUS_LABELS, type Task, type TaskStatus } from '../types/task';
 
 interface TaskCardProps {
   task: Task;
@@ -6,16 +6,10 @@ interface TaskCardProps {
   onDelete: (id: string) => void;
 }
 
-const STATUS_STYLES: Record<string, string> = {
+const STATUS_STYLES: Record<TaskStatus, string> = {
   Pending: 'bg-yellow-100 text-yellow-800',
   InProgress: 'bg-blue-100 text-blue-800',
   Done: 'bg-green-100 text-green-800',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  Pending: 'Pending',
-  InProgress: 'In Progress',
-  Done: 'Done',
 };
 
 function formatDate(iso: string): string {
@@ -34,9 +28,9 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-medium text-gray-900 break-words leading-snug">{task.title}</h3>
         <span
-          className={`shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[task.status] ?? 'bg-gray-100 text-gray-700'}`}
+          className={`shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[task.status]}`}
         >
-          {STATUS_LABELS[task.status] ?? task.status}
+          {STATUS_LABELS[task.status]}
         </span>
       </div>
 
