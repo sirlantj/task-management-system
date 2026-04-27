@@ -39,6 +39,34 @@ public class TaskItem
         UpdatedAt = updatedAt;
     }
 
+    public static TaskItem Reconstitute(
+        Guid id,
+        string title,
+        string? description,
+        TaskStatus status,
+        DateTime? dueDate,
+        Guid userId,
+        DateTime createdAt,
+        DateTime? updatedAt)
+    {
+        return new TaskItem
+        {
+            Id = id,
+            Title = title,
+            Description = description,
+            Status = status,
+            DueDate = dueDate,
+            UserId = userId,
+            CreatedAt = createdAt,
+            UpdatedAt = updatedAt
+        };
+    }
+
+    private TaskItem()
+    {
+        Title = string.Empty;
+    }
+
     public void UpdateTitle(string title)
     {
         ValidateTitle(title);
